@@ -78,18 +78,14 @@ yum clean all
 yum install -y wget git net-tools bind-utils iptables-services bridge-utils rsync
 yum update -y
 
-# Create the /var/log partition
-(echo n; echo p; echo; echo; echo t; echo 4; echo 8e; echo w;) | fdisk /dev/vda
-partprobe
-pvcreate /dev/vda4 
-vgcreate vg_var /dev/vda4
-lvcreate -l 100%VG -n lv_log vg_var
-mkfs.xfs /dev/vg_var/lv_log 
+# Create and mount /var/log 
+lvcreate -l 100%FREE -n lv_log vg1
+mkfs.xfs /dev/vg1/lv_log 
 mkdir /mnt/log
-mount /dev/mapper/vg_var-lv_log /mnt/log
+mount /dev/vg1/lv_log /mnt/log
 rsync -a -A -X /var/log/ /mnt/log
 umount /mnt/log
-echo "/dev/mapper/vg_var-lv_log /var/log xfs defaults 0 0" >> /etc/fstab 
+echo "/dev/vg1/lv_log /var/log xfs defaults 0 0" >> /etc/fstab 
 
 # Copy some files
 SCRIPT_BASE_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
@@ -104,6 +100,9 @@ chkconfig network on
 # Self distruct
 2>/dev/null >/root/.ssh/authorized_keys
 2>/dev/null >/home/cloud-user/.ssh/authorized_keys
+rm -rf /var/lib/cloud/instances/*
+rm -rf /var/lib/cloud/sem/*
+rm -rf /var/lib/cloud/data/*
 rm -rf ${SCRIPT_BASE_DIR}/../../
 history -c
 > ~/.bash_history
