@@ -4,6 +4,8 @@ MAINTAINER Andrew Block “andrew.block@redhat.com”
 
 ADD bin/start.sh /root/
 
+ADD ansible-2.2.repo /etc/yum.repos.d/
+
 # Update System and install clients
 RUN yum install -y https://repos.fedorapeople.org/repos/openstack/openstack-liberty/rdo-release-liberty-5.noarch.rpm; \
   yum update -y; \
@@ -16,7 +18,7 @@ RUN yum install -y https://repos.fedorapeople.org/repos/openstack/openstack-libe
                  python-swiftclient python-troveclient \
                  python-openstackclient python-passlib; \
   yum clean all; \
-  pip install shade
+  pip install shade oslo.log
 
 # Set /root as starting directory
 WORKDIR /root

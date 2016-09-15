@@ -1,0 +1,8 @@
+[abutcher-ansible]
+name=Copr repo for ansible owned by abutcher
+baseurl=https://copr-be.cloud.fedoraproject.org/results/abutcher/ansible/epel-7-$basearch/
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=https://copr-be.cloud.fedoraproject.org/results/abutcher/ansible/pubkey.gpg
+enabled=1
+enabled_metadata=1
